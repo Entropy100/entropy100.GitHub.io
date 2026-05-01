@@ -10,22 +10,17 @@
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
-            min-height: 100vh;
-            background: url('140981624_p0_master1200.jpg') no-repeat center center fixed;
-            background-size: cover;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            height: 100vh;
+            background: url('140981624_p0_master1200.jpg') center/cover fixed no-repeat;
             font-family: 'Segoe UI', system-ui, sans-serif;
-            color: white;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
             position: relative;
-            overflow: hidden;
         }
-
-        /* 半透明遮罩，让文字更清晰 */
         body::before {
             content: '';
             position: absolute;
@@ -33,66 +28,59 @@
             background: rgba(0, 0, 0, 0.45);
             z-index: 0;
         }
-
-        。container {
+        .container {
             position: relative;
             z-index: 1;
-            text-align: center;
             padding: 2rem;
+            width: 100%;
+            max-width: 700px;
         }
-
         h1 {
             font-size: 4rem;
-            color: #39FF14; /* 初音绿 */
+            color: #39FF14;
             text-shadow: 0 0 15px #39FF14, 0 0 30px rgba(57, 255, 20, 0.5);
             margin-bottom: 1rem;
             letter-spacing: 0.1em;
         }
-
-        。subtitle {
-            font-size: 1.2rem;
-            color: #00BFFF; /* PowerShell蓝 */
-            margin-bottom: 3rem;
+        .subtitle {
+            font-size: 1.15rem;
+            color: #00BFFF;
+            margin-bottom: 3.5rem;
             opacity: 0.9;
         }
-
-        。links {
+        .links {
             display: flex;
-            gap: 1.5rem;
+            gap: 1.2rem;
             justify-content: center;
             flex-wrap: wrap;
         }
-
-        。link-btn {
-            padding: 0.8rem 2rem;
+        .link-btn {
+            padding: 0.8rem 2.2rem;
             border: 2px solid #39FF14;
             color: #39FF14;
             text-decoration: none;
             border-radius: 50px;
-            font-weight: bold;
-            transition: all 0.3s ease;
+            font-weight: 500;
+            transition: 0.28s ease;
             background: transparent;
         }
-
-        。link-btn:hover {
+        .link-btn:hover {
             background: #39FF14;
             color: #000;
             box-shadow: 0 0 20px rgba(57, 255, 20, 0.6);
             transform: translateY(-3px);
         }
-
-        /* 响应式适配 */
         @media (max-width: 600px) {
             h1 {
-                font-size: 2.5rem;
+                font-size: 2.6rem;
             }
-            。links {
+            .links {
                 flex-direction: column;
                 align-items: center;
             }
-            。link-btn {
+            .link-btn {
                 width: 100%;
-                max-width: 200px;
+                max-width: 220px;
             }
         }
     </style>
@@ -103,8 +91,8 @@
         <p class="subtitle">高中生 · 编程爱好者 · ACG玩家</p>
         <div class="links">
             <a href="https://github.com/Entropy100" class="link-btn">GitHub</a>
-            <a href="https://space.bilibili.com/382994048?spm_id_from=333.1007.0.0" class="link-btn">B站</a>
-            <a href="qqcooooooo@gmail.com" class="link-btn">Email</a>
+            <a href="https://space.bilibili.com/382994048" class="link-btn">B站</a>
+            <a href="mailto:qqcooooooo@gmail.com" class="link-btn">Email</a>
         </div>
     </div>
 </body>
