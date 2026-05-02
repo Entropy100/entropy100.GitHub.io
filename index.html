@@ -157,7 +157,7 @@ h1 {
 <div class="bg"></div>
 <div class="stars"></div>
 <div class="overlay"></div>
-<div class="meteor-container"></div>
+>
 
 <div class="main-container">
 
@@ -206,61 +206,6 @@ h1 {
 
 </div>
 
-<script>
-const box = document.querySelector('.meteor-container');
-
-function meteor() {
-    const m = document.createElement('div');
-
-    const len = 100 + Math.random() * 80;
-    const angle = 25 + Math.random() * 10; // 固定角度范围
-
-    m.style.cssText = `
-        position:absolute;
-        width:2px;
-        height:${len}px;
-        background:linear-gradient(to bottom, transparent, white);
-        transform: rotate(${angle}deg);
-        top:${Math.random() * 40}%;        /* 上半区域出现 */
-        left:${Math.random() * 50}%;       /* 👉 只在左半屏 */
-        opacity:0;
-    `;
-
-    box.appendChild(m);
-
-    let x = parseFloat(m.style.left);
-    let y = parseFloat(m.style.top);
-    let opacity = 0;
-
-    const speed = 2.5 + Math.random() * 2; // ⚡ 更快
-
-    function move() {
-        x += speed;
-        y += speed * 0.6; // 固定方向斜线运动（不下坠）
-
-        if (opacity < 1) opacity += 0.1;
-
-        m.style.left = x + "%";
-        m.style.top = y + "%";
-        m.style.opacity = opacity;
-
-        if (x > 120 || y > 120) {
-            m.remove();
-            setTimeout(meteor, Math.random() * 4000);
-            return;
-        }
-
-        requestAnimationFrame(move);
-    }
-
-    move();
-}
-
-/* 初始数量减少一点，更自然 */
-for (let i = 0; i < 6; i++) {
-    setTimeout(meteor, Math.random() * 3000);
-}
-</script>
 
 </body>
 </html>
