@@ -10,33 +10,35 @@
             padding: 0;
             box-sizing: border-box;
         }
-        html, body {
+        html {
             width: 100%;
             height: 100%;
-            overflow: hidden;
-            position: fixed;
         }
         body {
+            width: 100%;
+            min-height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
             font-family: 'Segoe UI', system-ui, sans-serif;
             color: white;
             display: flex;
             justify-content: center;
-            align-items: center;
             position: relative;
         }
 
-        /* 强制横屏核心 */
+        /* 强制横屏核心（修复内容溢出） */
         @media (max-width: 600px) and (orientation: portrait) {
             body {
                 transform: rotate(90deg);
                 transform-origin: center center;
                 width: 100vh;
-                height: 100vw;
-                position: fixed;
+                min-height: 100vw;
+                position: absolute;
                 top: 50%;
                 left: 50%;
                 margin-left: -50vh;
                 margin-top: -50vw;
+                overflow-y: auto;
             }
         }
 
@@ -86,17 +88,17 @@
             z-index: 0;
         }
 
-        /* 主内容容器 */
+        /* 主内容容器（修复手机端高度） */
         .main-container {
             position: relative;
             z-index: 1;
             width: 100%;
             max-width: 1200px;
-            height: 90vh;
+            padding: 2rem;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            padding: 2rem;
+            min-height: 100vh;
         }
 
         /* 头部 */
@@ -123,7 +125,7 @@
         .content-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 2rem;
+            gap: 1.5rem;
             margin-bottom: 2rem;
         }
 
@@ -132,7 +134,7 @@
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(57, 255, 20, 0.3);
             border-radius: 12px;
-            padding: 1.5rem;
+            padding: 1.2rem;
             backdrop-filter: blur(5px);
             transition: all 0.3s ease;
         }
@@ -142,46 +144,48 @@
             transform: translateY(-2px);
         }
         .card-title {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             color: #39FF14;
-            margin-bottom: 1rem;
+            margin-bottom: 0.8rem;
             border-bottom: 1px solid rgba(57, 255, 20, 0.3);
-            padding-bottom: 0.5rem;
+            padding-bottom: 0.4rem;
         }
 
         /* 关于我 */
         .about-text {
             line-height: 1.6;
             color: rgba(255, 255, 255, 0.85);
+            font-size: 0.95rem;
         }
 
         /* 技能栈 */
         .skills {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.6rem;
+            gap: 0.5rem;
         }
         .skill-tag {
             background: rgba(0, 191, 255, 0.2);
             border: 1px solid rgba(0, 191, 255, 0.5);
             color: #00BFFF;
-            padding: 0.3rem 0.8rem;
+            padding: 0.25rem 0.7rem;
             border-radius: 20px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         /* 项目 */
         .project-item {
-            margin-bottom: 1rem;
+            margin-bottom: 0.8rem;
         }
         .project-name {
             color: white;
             font-weight: 500;
-            margin-bottom: 0.3rem;
+            margin-bottom: 0.2rem;
+            font-size: 0.95rem;
         }
         .project-desc {
             color: rgba(255, 255, 255, 0.7);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             line-height: 1.4;
         }
 
@@ -191,6 +195,7 @@
             gap: 1.2rem;
             justify-content: center;
             flex-wrap: wrap;
+            margin-bottom: 1rem;
         }
         .link-btn {
             padding: 0.8rem 2.2rem;
@@ -245,31 +250,18 @@
             0%, 100% { opacity: 0.3; }
             50% { opacity: 1; }
         }
-        @keyframes meteor-fall {
-            0% {
-                transform: translateX(0) translateY(0) rotate(30deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateX(300px) translateY(600px) rotate(30deg);
-                opacity: 0;
-            }
-        }
 
-        /* 手机适配 */
+        /* 手机端全面优化 */
         @media (max-width: 600px) {
             h1 {
-                font-size: 2.2rem;
+                font-size: 2rem;
+            }
+            .subtitle {
+                font-size: 1rem;
             }
             .main-container {
-                height: 95vh;
                 padding: 1rem;
+                min-height: 100vw;
             }
             .content-grid {
                 grid-template-columns: 1fr;
@@ -280,14 +272,27 @@
                 padding: 1rem;
             }
             .card-title {
-                font-size: 1.1rem;
+                font-size: 1rem;
+            }
+            .about-text {
+                font-size: 0.9rem;
+            }
+            .skill-tag {
+                font-size: 0.8rem;
+                padding: 0.2rem 0.6rem;
+            }
+            .project-name {
+                font-size: 0.9rem;
+            }
+            .project-desc {
+                font-size: 0.8rem;
             }
             .links {
-                flex-direction: row;
+                gap: 0.8rem;
             }
             .link-btn {
                 padding: 0.6rem 1.5rem;
-                font-size: 0.9rem;
+                font-size: 0.85rem;
             }
         }
     </style>
@@ -384,28 +389,30 @@
             starsContainer.appendChild(star);
         }
 
-        // 符合物理规律的流星雨
+        // ======================
+        // 真实抛物线流星雨（带重力加速度）
+        // ======================
         const meteorContainer = document.querySelector('.meteor-container');
         const meteorCount = 4;
+        const gravity = 0.15; // 重力加速度
 
         function createMeteor() {
             const meteor = document.createElement('div');
             const length = Math.random() * 80 + 60;
-            const speed = Math.random() * 1.5 + 1;
-            const delay = Math.random() * 10;
-
+            const angle = 25 + Math.random() * 10; // 25-35度
+            const speed = 3 + Math.random() * 2; // 初始速度
+            
+            // 流星样式
             meteor.style.cssText = `
                 position: absolute;
                 width: 2px;
                 height: ${length}px;
                 background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.95));
-                top: ${Math.random() * 30 - 50}%;
-                left: ${Math.random() * 60}%;
+                transform: rotate(${angle}deg);
                 opacity: 0;
-                animation: meteor-fall ${speed}s linear infinite;
-                animation-delay: ${delay}s;
             `;
 
+            // 流星头部
             const head = document.createElement('div');
             head.style.cssText = `
                 position: absolute;
@@ -418,15 +425,49 @@
                 box-shadow: 0 0 10px white, 0 0 20px white;
             `;
             meteor.appendChild(head);
-
             meteorContainer.appendChild(meteor);
 
-            setTimeout(() => {
-                meteor.remove();
-                createMeteor();
-            }, (speed + delay) * 1000);
+            // 初始位置
+            let x = Math.random() * 60; // 左半屏
+            let y = -50;
+            let vx = speed * Math.cos(angle * Math.PI / 180);
+            let vy = speed * Math.sin(angle * Math.PI / 180);
+            let opacity = 0;
+
+            // 逐帧更新（抛物线运动）
+            function updateMeteor() {
+                vy += gravity; // 重力加速
+                x += vx;
+                y += vy;
+
+                // 淡入淡出
+                if (y < 20) {
+                    opacity = y / 20;
+                } else if (y > 80) {
+                    opacity = 1 - (y - 80) / 20;
+                } else {
+                    opacity = 1;
+                }
+
+                meteor.style.left = `${x}%`;
+                meteor.style.top = `${y}%`;
+                meteor.style.opacity = opacity;
+
+                // 超出屏幕后销毁并重新生成
+                if (y > 100 || x > 100) {
+                    meteor.remove();
+                    setTimeout(createMeteor, Math.random() * 5000);
+                    return;
+                }
+
+                requestAnimationFrame(updateMeteor);
+            }
+
+            // 随机延迟后开始
+            setTimeout(updateMeteor, Math.random() * 8000);
         }
 
+        // 初始生成流星
         for (let i = 0; i < meteorCount; i++) {
             setTimeout(createMeteor, Math.random() * 3000);
         }
