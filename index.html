@@ -1,477 +1,283 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Entropy</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Entropy</title>
 
-        /* 全局基础样式 */
-        html, body {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            color: #ffffff;
-        }
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            position: relative;
-        }
+body {
+    font-family: system-ui, sans-serif;
+    color: white;
+    overflow-x: hidden;
+}
 
-        /* 完美强制横屏（终极兼容版） */
-        @media (max-width: 768px) and (orientation: portrait) {
-            html {
-                transform: rotate(90deg);
-                transform-origin: 50% 50%;
-                width: 100vh;
-                height: 100vw;
-                position: fixed;
-                top: 0;
-                left: 0;
-            }
+/* 层级 */
+.bg { z-index: -3; }
+.stars { z-index: -2; }
+.overlay { z-index: -1; }
+.meteor-container { z-index: 0; }
+.main-container { z-index: 1; }
 
-            body {
-                width: 100%;
-                height: 100%;
-                overflow-y: auto;
-                overflow-x: hidden;
-            }
-        }
+/* 背景 */
+.bg {
+    position: fixed;
+    inset: 0;
+    background: url('140981624_p0_master1200.jpg') center/cover no-repeat;
+}
 
-        /* 背景层级（严格按照要求：背景图→流星→星空→遮罩） */
-        .background-image {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -4;
-            background: url('140981624_p0_master1200.jpg') no-repeat center center;
-            background-size: cover;
-        }
+/* 遮罩 */
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+}
 
-        .meteor-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -3;
-            pointer-events: none;
-            overflow: hidden;
-        }
+/* 星空 */
+.stars, .meteor-container {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+}
 
-        .stars-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -2;
-            pointer-events: none;
-        }
+/* 主体 */
+.main-container {
+    position: relative;
+    max-width: 1200px;
+    margin: auto;
+    padding: 2rem;
+}
 
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background: rgba(0, 0, 0, 0.55);
-        }
+/* 标题 */
+h1 {
+    font-size: clamp(2rem, 5vw, 4rem);
+    text-align: center;
+    color: #39FF14;
+}
 
-        /* 主内容容器 */
-        .main-content {
-            position: relative;
-            z-index: 1;
-            width: 100%;
-            max-width: 1200px;
-            padding: 2rem 1.5rem;
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-        }
+/* 副标题 */
+.subtitle {
+    text-align: center;
+    color: #00BFFF;
+    margin-bottom: 2rem;
+}
 
-        /* 头部 */
-        .header {
-            text-align: center;
-            padding-top: 1rem;
-        }
+/* 网格 */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+}
 
-        .title {
-            font-size: clamp(2.2rem, 5vw, 4rem);
-            color: #39FF14;
-            text-shadow: 0 0 15px #39FF14, 0 0 30px rgba(57, 255, 20, 0.5);
-            margin-bottom: 0.5rem;
-            letter-spacing: 0.1em;
-            animation: glow-green 3s ease-in-out infinite alternate;
-        }
+/* 卡片 */
+.card {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(57,255,20,0.3);
+    padding: 1.2rem;
+    border-radius: 12px;
+    backdrop-filter: blur(6px);
+    transition: .3s;
+}
+.card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 0 20px rgba(57,255,20,.3);
+}
 
-        .subtitle {
-            font-size: clamp(0.9rem, 2vw, 1.2rem);
-            color: #00BFFF;
-            opacity: 0.9;
-            animation: glow-blue 4s ease-in-out infinite alternate;
-        }
+/* 技能 */
+.skill {
+    display: inline-block;
+    margin: 4px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    border: 1px solid #00BFFF;
+    color: #00BFFF;
+    font-size: 0.8rem;
+}
 
-        /* 内容网格（三列布局） */
-        .content-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.2rem;
-        }
+/* 按钮 */
+.links {
+    margin-top: 2rem;
+    text-align: center;
+}
+.links a {
+    display: inline-block;
+    margin: .5rem;
+    padding: .6rem 1.6rem;
+    border: 1px solid #39FF14;
+    border-radius: 999px;
+    color: #39FF14;
+    text-decoration: none;
+}
+.links a:hover {
+    background: #39FF14;
+    color: black;
+}
 
-        /* 卡片样式 */
-        .card {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(57, 255, 20, 0.3);
-            border-radius: 12px;
-            padding: 1.2rem;
-            backdrop-filter: blur(6px);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+/* ⭐ 星星 */
+@keyframes twinkle {
+    0%,100%{opacity:.3}
+    50%{opacity:1}
+}
 
-        .card:hover {
-            border-color: rgba(57, 255, 20, 0.8);
-            box-shadow: 0 0 25px rgba(57, 255, 20, 0.3);
-            transform: translateY(-6px);
-        }
+/* 📱 强制横屏（稳定版） */
+@media (max-width: 768px) and (orientation: portrait) {
 
-        .card-title {
-            font-size: clamp(1rem, 2.5vw, 1.3rem);
-            color: #39FF14;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid rgba(57, 255, 20, 0.3);
-        }
+    body {
+        overflow: hidden;
+    }
 
-        /* 关于我 */
-        .about-text {
-            line-height: 1.6;
-            color: rgba(255, 255, 255, 0.85);
-            font-size: clamp(0.8rem, 1.8vw, 0.95rem);
-        }
+    .main-container {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        width: 100vh;
+        height: 100vw;
+        transform: translate(-50%, -50%) rotate(90deg);
+        overflow-y: auto;
+    }
 
-        /* 技能标签 */
-        .skills {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        .skill-tag {
-            background: rgba(0, 191, 255, 0.2);
-            border: 1px solid rgba(0, 191, 255, 0.5);
-            color: #00BFFF;
-            padding: 0.25rem 0.7rem;
-            border-radius: 20px;
-            font-size: clamp(0.75rem, 1.5vw, 0.9rem);
-            transition: all 0.2s ease;
-        }
-
-        .skill-tag:hover {
-            background: rgba(0, 191, 255, 0.4);
-            transform: scale(1.05);
-            box-shadow: 0 0 10px rgba(0, 191, 255, 0.3);
-        }
-
-        /* 项目列表 */
-        .project-item {
-            margin-bottom: 1rem;
-            transition: all 0.2s ease;
-        }
-
-        .project-item:hover {
-            transform: translateX(5px);
-        }
-
-        .project-name {
-            color: #ffffff;
-            font-weight: 500;
-            margin-bottom: 0.3rem;
-            font-size: clamp(0.8rem, 1.8vw, 0.95rem);
-        }
-
-        .project-desc {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: clamp(0.75rem, 1.5vw, 0.85rem);
-            line-height: 1.4;
-        }
-
-        /* 链接按钮 */
-        .links {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            padding-bottom: 2rem;
-        }
-
-        .link-btn {
-            padding: 0.7rem 2rem;
-            border: 2px solid #39FF14;
-            color: #39FF14;
-            text-decoration: none;
-            border-radius: 50px;
-            font-weight: 500;
-            font-size: clamp(0.8rem, 1.8vw, 1rem);
-            transition: all 0.3s ease;
-            background: transparent;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .link-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(57, 255, 20, 0.2), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .link-btn:hover::before {
-            left: 100%;
-        }
-
-        .link-btn:hover {
-            background: #39FF14;
-            color: #000000;
-            box-shadow: 0 0 20px rgba(57, 255, 20, 0.6), 0 0 40px rgba(57, 255, 20, 0.3);
-            transform: translateY(-3px);
-        }
-
-        /* 动画 */
-        @keyframes glow-green {
-            from {
-                text-shadow: 0 0 15px #39FF14, 0 0 30px rgba(57, 255, 20, 0.5);
-            }
-            to {
-                text-shadow: 0 0 25px #39FF14, 0 0 50px rgba(57, 255, 20, 0.7);
-            }
-        }
-
-        @keyframes glow-blue {
-            from {
-                text-shadow: 0 0 5px #00BFFF;
-            }
-            to {
-                text-shadow: 0 0 15px #00BFFF, 0 0 25px rgba(0, 191, 255, 0.5);
-            }
-        }
-
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 1; }
-        }
-
-        /* 多端适配 */
-        @media (min-width: 769px) and (max-width: 1024px) {
-            .main-content {
-                max-width: 900px;
-                padding: 2.5rem 2rem;
-            }
-        }
-
-        @media (min-width: 1025px) {
-            .main-content {
-                max-width: 1200px;
-                padding: 3rem 2rem;
-            }
-
-            .content-grid {
-                gap: 1.5rem;
-            }
-
-            .card {
-                padding: 1.5rem;
-            }
-        }
-    </style>
+    .bg, .overlay, .stars, .meteor-container {
+        width: 100vh;
+        height: 100vw;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(90deg);
+    }
+}
+</style>
 </head>
+
 <body>
-    <!-- 背景层级：背景图 → 流星 → 星空 → 遮罩 -->
-    <div class="background-image"></div>
-    <div class="meteor-container"></div>
-    <div class="stars-container"></div>
-    <div class="overlay"></div>
 
-    <!-- 主内容 -->
-    <div class="main-content">
-        <div class="header">
-            <h1 class="title">Entropy</h1>
-            <p class="subtitle">高中生 · 编程爱好者 · ACG玩家</p>
+<div class="bg"></div>
+<div class="stars"></div>
+<div class="overlay"></div>
+<div class="meteor-container"></div>
+
+<div class="main-container">
+
+    <h1>Entropy</h1>
+    <p class="subtitle">高中生 · 编程爱好者 · ACG玩家</p>
+
+    <div class="grid">
+
+        <div class="card">
+            <h3>精选项目</h3>
+            <p>Termux 美化脚本</p>
+            <p>一键配置初音绿主题终端</p>
+            <br>
+            <p>个人博客系统</p>
+            <p>支持 Markdown 自动部署</p>
         </div>
 
-        <div class="content-grid">
-            <div class="card">
-                <h3 class="card-title">精选项目</h3>
-                <div class="project-item">
-                    <div class="project-name">Termux 美化脚本</div>
-                    <div class="project-desc">一键配置初音绿主题的Termux终端，包含zsh、插件和自定义提示符</div>
-                </div>
-                <div class="project-item">
-                    <div class="project-name">个人博客系统</div>
-                    <div class="project-desc">基于静态生成的个人博客，支持Markdown写作和自动部署</div>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3 class="card-title">技能栈</h3>
-                <div class="skills">
-                    <span class="skill-tag">Python</span>
-                    <span class="skill-tag">HTML/CSS</span>
-                    <span class="skill-tag">JavaScript</span>
-                    <span class="skill-tag">Linux</span>
-                    <span class="skill-tag">Termux</span>
-                    <span class="skill-tag">Git</span>
-                    <span class="skill-tag">逆向工程</span>
-                    <span class="skill-tag">DNS配置</span>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3 class="card-title">关于我</h3>
-                <p class="about-text">
-                    热爱代码与二次元的高中生，喜欢折腾各种技术。
-                    专注于软件开发、终端美化和逆向工程，
-                    相信代码能创造无限可能。
-                    闲暇时喜欢看动漫、玩游戏，享受技术与艺术的碰撞。
-                </p>
-            </div>
+        <div class="card">
+            <h3>技能栈</h3>
+            <span class="skill">Python</span>
+            <span class="skill">HTML/CSS</span>
+            <span class="skill">JavaScript</span>
+            <span class="skill">Linux</span>
+            <span class="skill">Termux</span>
+            <span class="skill">Git</span>
+            <span class="skill">逆向工程</span>
+            <span class="skill">DNS</span>
         </div>
 
-        <div class="links">
-            <a href="https://github.com/Entropy100" class="link-btn">GitHub</a>
-            <a href="https://space.bilibili.com/382994048" class="link-btn">B站</a>
-            <a href="mailto:qqcooooooo@gmail.com" class="link-btn">Email</a>
+        <div class="card">
+            <h3>关于我</h3>
+            <p>
+                热爱代码与二次元的高中生。<br>
+                喜欢折腾技术，专注开发与终端美化。<br>
+                相信代码可以创造无限可能。
+            </p>
         </div>
+
     </div>
 
-    <script>
-        // 星空背景
-        const starsContainer = document.querySelector('.stars-container');
-        const starCount = 120;
+    <div class="links">
+        <a href="https://github.com/Entropy100" target="_blank">GitHub</a>
+        <a href="https://space.bilibili.com/382994048" target="_blank">B站</a>
+        <a href="mailto:qqcooooooo@gmail.com">Email</a>
+    </div>
 
-        for (let i = 0; i < starCount; i++) {
-            const star = document.createElement('div');
-            const size = Math.random() * 3 + 1;
-            
-            star.style.cssText = `
-                position: absolute;
-                width: ${size}px;
-                height: ${size}px;
-                background: #ffffff;
-                border-radius: 50%;
-                top: ${Math.random() * 100}%;
-                left: ${Math.random() * 100}%;
-                opacity: ${Math.random() * 0.7 + 0.3};
-                animation: twinkle ${Math.random() * 4 + 2}s ease-in-out infinite;
-                animation-delay: ${Math.random() * 6}s;
-            `;
-            
-            starsContainer.appendChild(star);
+</div>
+
+<script>
+/* ⭐ 星空 */
+const stars = document.querySelector('.stars');
+for (let i = 0; i < 120; i++) {
+    const s = document.createElement('div');
+    const size = Math.random() * 2 + 1;
+
+    s.style.cssText = `
+        position:absolute;
+        width:${size}px;
+        height:${size}px;
+        background:white;
+        border-radius:50%;
+        top:${Math.random()*100}%;
+        left:${Math.random()*100}%;
+        animation:twinkle ${2+Math.random()*4}s infinite;
+    `;
+    stars.appendChild(s);
+}
+
+/* ☄️ 流星 */
+const box = document.querySelector('.meteor-container');
+
+function meteor() {
+    const m = document.createElement('div');
+
+    const len = 120 + Math.random()*100;
+    const angle = 20 + Math.random()*20;
+
+    m.style.cssText = `
+        position:absolute;
+        width:3px;
+        height:${len}px;
+        background:linear-gradient(to bottom,transparent,white);
+        transform:rotate(${angle}deg);
+        top:-10%;
+        left:${Math.random()*80}%;
+        opacity:0;
+    `;
+
+    box.appendChild(m);
+
+    let y = -10;
+    let opacity = 0;
+
+    function move() {
+        y += 0.8;
+
+        if (y < 20) opacity += 0.05;
+        else opacity -= 0.01;
+
+        m.style.top = y + "%";
+        m.style.opacity = opacity;
+
+        if (y > 110) {
+            m.remove();
+            setTimeout(meteor, Math.random()*8000);
+            return;
         }
 
-        // 优化版流星雨（直接在背景图上显示）
-        const meteorContainer = document.querySelector('.meteor-container');
-        const meteorCount = 12; // 总数量，保证同时有2-3个
-        const gravity = 0.06; // 重力加速度，控制下落速度
+        requestAnimationFrame(move);
+    }
 
-        function createMeteor() {
-            const meteor = document.createElement('div');
-            const length = Math.random() * 80 + 120; // 轨迹长度：120-200px
-            const angle = 20 + Math.random() * 25; // 角度范围：20-45度
-            const speed = 1.5 + Math.random() * 1.5; // 初始速度
+    move();
+}
 
-            // 流星轨迹
-            meteor.style.cssText = `
-                position: absolute;
-                width: 4px; // 轨迹粗细
-                height: ${length}px;
-                background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.95));
-                transform: rotate(${angle}deg);
-                opacity: 0;
-            `;
+/* 初始 */
+for (let i = 0; i < 6; i++) {
+    setTimeout(meteor, Math.random()*5000);
+}
+</script>
 
-            // 流星头部
-            const head = document.createElement('div');
-            head.style.cssText = `
-                position: absolute;
-                bottom: 0;
-                left: -3px;
-                width: 10px; // 头部大小
-                height: 10px;
-                background: #ffffff;
-                border-radius: 50%;
-                box-shadow: 0 0 15px #ffffff, 0 0 30px #ffffff, 0 0 45px #ffffff;
-            `;
-
-            meteor.appendChild(head);
-            meteorContainer.appendChild(meteor);
-
-            // 流星运动
-            let x = Math.random() * 80;
-            let y = -100;
-            let vx = speed * Math.cos(angle * Math.PI / 180);
-            let vy = speed * Math.sin(angle * Math.PI / 180);
-            let opacity = 0;
-
-            function updateMeteor() {
-                vy += gravity;
-                x += vx;
-                y += vy;
-
-                // 平滑淡入淡出
-                if (y < 30) {
-                    opacity = y / 30;
-                } else if (y > 70) {
-                    opacity = 1 - (y - 70) / 30;
-                } else {
-                    opacity = 1;
-                }
-
-                meteor.style.left = `${x}%`;
-                meteor.style.top = `${y}%`;
-                meteor.style.opacity = opacity;
-
-                // 流星消失后重新生成
-                if (y > 100 || x > 100) {
-                    meteor.remove();
-                    setTimeout(createMeteor, Math.random() * 15000); // 0-15秒随机延迟
-                    return;
-                }
-
-                requestAnimationFrame(updateMeteor);
-            }
-
-            // 初始随机延迟
-            setTimeout(updateMeteor, Math.random() * 10000);
-        }
-
-        // 初始化流星
-        for (let i = 0; i < meteorCount; i++) {
-            setTimeout(createMeteor, Math.random() * 8000);
-        }
-
-        // 修复iOS Safari手势缩放问题
-        if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
-            document.addEventListener('gesturestart', function(e) {
-                e.preventDefault();
-            });
-        }
-    </script>
 </body>
 </html>
