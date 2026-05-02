@@ -2,27 +2,25 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Entropy</title>
-
 <style>
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
-
 body {
-    font-family: system-ui, sans-serif;
+    font-family: system-ui, -apple-system, sans-serif;
     color: white;
     overflow-x: hidden;
 }
 
-/* 层级 */
-.bg { z-index: -3; }
+/* ✅ 正确层级：背景图 → 流星 → 星空 → 遮罩 → 内容 */
+.bg { z-index: -4; }
+.meteor-container { z-index: -3; }
 .stars { z-index: -2; }
 .overlay { z-index: -1; }
-.meteor-container { z-index: 0; }
 .main-container { z-index: 1; }
 
 /* 背景 */
@@ -36,14 +34,15 @@ body {
 .overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.5);
+    background: rgba(0,0,0,0.55);
 }
 
-/* 星空 */
+/* 星空和流星 */
 .stars, .meteor-container {
     position: fixed;
     inset: 0;
     pointer-events: none;
+    overflow: hidden;
 }
 
 /* 主体 */
@@ -54,84 +53,134 @@ body {
     padding: 2rem;
 }
 
-/* 标题 */
+/* 标题（带发光动画） */
 h1 {
     font-size: clamp(2rem, 5vw, 4rem);
     text-align: center;
     color: #39FF14;
+    text-shadow: 0 0 15px #39FF14, 0 0 30px rgba(57,255,20,0.5);
+    margin-bottom: 0.5rem;
+    animation: glow-green 3s ease-in-out infinite alternate;
 }
 
 /* 副标题 */
 .subtitle {
     text-align: center;
     color: #00BFFF;
+    font-size: clamp(0.9rem, 2vw, 1.2rem);
     margin-bottom: 2rem;
+    text-shadow: 0 0 5px #00BFFF;
+    animation: glow-blue 4s ease-in-out infinite alternate;
 }
 
 /* 网格 */
 .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
 }
 
-/* 卡片 */
+/* 卡片（增强hover效果） */
 .card {
     background: rgba(0,0,0,0.3);
     border: 1px solid rgba(57,255,20,0.3);
     padding: 1.2rem;
     border-radius: 12px;
     backdrop-filter: blur(6px);
-    transition: .3s;
+    transition: all 0.3s ease;
 }
 .card:hover {
     transform: translateY(-6px);
-    box-shadow: 0 0 20px rgba(57,255,20,.3);
+    border-color: rgba(57,255,20,0.8);
+    box-shadow: 0 0 25px rgba(57,255,20,0.3);
+}
+.card h3 {
+    color: #39FF14;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(57,255,20,0.3);
+}
+.card p {
+    line-height: 1.6;
+    color: rgba(255,255,255,0.85);
+    margin-bottom: 0.3rem;
 }
 
-/* 技能 */
+/* 技能标签 */
 .skill {
     display: inline-block;
     margin: 4px;
-    padding: 3px 10px;
+    padding: 0.25rem 0.7rem;
     border-radius: 999px;
-    border: 1px solid #00BFFF;
+    border: 1px solid rgba(0,191,255,0.5);
+    background: rgba(0,191,255,0.2);
     color: #00BFFF;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+}
+.skill:hover {
+    background: rgba(0,191,255,0.4);
+    transform: scale(1.05);
+    box-shadow: 0 0 8px rgba(0,191,255,0.3);
 }
 
-/* 按钮 */
+/* 按钮（保留流光效果） */
 .links {
-    margin-top: 2rem;
+    margin-top: 2.5rem;
     text-align: center;
 }
 .links a {
     display: inline-block;
-    margin: .5rem;
-    padding: .6rem 1.6rem;
-    border: 1px solid #39FF14;
+    margin: 0.5rem;
+    padding: 0.7rem 2rem;
+    border: 2px solid #39FF14;
     border-radius: 999px;
     color: #39FF14;
     text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+.links a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(57,255,20,0.2), transparent);
+    transition: left 0.5s ease;
+}
+.links a:hover::before {
+    left: 100%;
 }
 .links a:hover {
     background: #39FF14;
     color: black;
+    box-shadow: 0 0 20px rgba(57,255,20,0.6);
+    transform: translateY(-3px);
 }
 
-/* ⭐ 星星 */
+/* 动画 */
+@keyframes glow-green {
+    from { text-shadow: 0 0 15px #39FF14, 0 0 30px rgba(57,255,20,0.5); }
+    to { text-shadow: 0 0 25px #39FF14, 0 0 50px rgba(57,255,20,0.7); }
+}
+@keyframes glow-blue {
+    from { text-shadow: 0 0 5px #00BFFF; }
+    to { text-shadow: 0 0 15px #00BFFF, 0 0 25px rgba(0,191,255,0.5); }
+}
 @keyframes twinkle {
     0%,100%{opacity:.3}
     50%{opacity:1}
 }
 
-/* 📱 强制横屏（稳定版） */
+/* 📱 完美强制横屏（保留ChatGPT的优秀逻辑） */
 @media (max-width: 768px) and (orientation: portrait) {
-
     body {
         overflow: hidden;
     }
-
     .main-container {
         position: fixed;
         top: 50%;
@@ -140,9 +189,9 @@ h1 {
         height: 100vw;
         transform: translate(-50%, -50%) rotate(90deg);
         overflow-y: auto;
+        overflow-x: hidden;
     }
-
-    .bg, .overlay, .stars, .meteor-container {
+    .bg, .meteor-container, .stars, .overlay {
         width: 100vh;
         height: 100vw;
         top: 50%;
@@ -150,32 +199,35 @@ h1 {
         transform: translate(-50%, -50%) rotate(90deg);
     }
 }
+
+/* 平板适配 */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .main-container {
+        max-width: 900px;
+    }
+}
 </style>
 </head>
-
 <body>
-
 <div class="bg"></div>
+<div class="meteor-container"></div>
 <div class="stars"></div>
 <div class="overlay"></div>
-<div class="meteor-container"></div>
 
 <div class="main-container">
-
     <h1>Entropy</h1>
     <p class="subtitle">高中生 · 编程爱好者 · ACG玩家</p>
-
+    
     <div class="grid">
-
         <div class="card">
             <h3>精选项目</h3>
-            <p>Termux 美化脚本</p>
-            <p>一键配置初音绿主题终端</p>
+            <p><strong>Termux 美化脚本</strong></p>
+            <p>一键配置初音绿主题终端，包含zsh、插件和自定义提示符</p>
             <br>
-            <p>个人博客系统</p>
-            <p>支持 Markdown 自动部署</p>
+            <p><strong>个人博客系统</strong></p>
+            <p>基于静态生成，支持Markdown写作和自动部署</p>
         </div>
-
+        
         <div class="card">
             <h3>技能栈</h3>
             <span class="skill">Python</span>
@@ -185,35 +237,30 @@ h1 {
             <span class="skill">Termux</span>
             <span class="skill">Git</span>
             <span class="skill">逆向工程</span>
-            <span class="skill">DNS</span>
+            <span class="skill">DNS配置</span>
         </div>
-
+        
         <div class="card">
             <h3>关于我</h3>
-            <p>
-                热爱代码与二次元的高中生。<br>
-                喜欢折腾技术，专注开发与终端美化。<br>
-                相信代码可以创造无限可能。
-            </p>
+            <p>热爱代码与二次元的高中生，喜欢折腾各种技术。</p>
+            <p>专注于软件开发、终端美化和逆向工程。</p>
+            <p>相信代码可以创造无限可能。</p>
         </div>
-
     </div>
-
+    
     <div class="links">
         <a href="https://github.com/Entropy100" target="_blank">GitHub</a>
         <a href="https://space.bilibili.com/382994048" target="_blank">B站</a>
         <a href="mailto:qqcooooooo@gmail.com">Email</a>
     </div>
-
 </div>
 
 <script>
-/* ⭐ 星空 */
+// 星空
 const stars = document.querySelector('.stars');
 for (let i = 0; i < 120; i++) {
     const s = document.createElement('div');
-    const size = Math.random() * 2 + 1;
-
+    const size = Math.random() * 3 + 1;
     s.style.cssText = `
         position:absolute;
         width:${size}px;
@@ -222,62 +269,77 @@ for (let i = 0; i < 120; i++) {
         border-radius:50%;
         top:${Math.random()*100}%;
         left:${Math.random()*100}%;
+        opacity:${Math.random()*0.7+0.3};
         animation:twinkle ${2+Math.random()*4}s infinite;
+        animation-delay:${Math.random()*6}s;
     `;
     stars.appendChild(s);
 }
 
-/* ☄️ 流星 */
+// ☄️ 优化版流星（带头部+发光+长轨迹）
 const box = document.querySelector('.meteor-container');
-
 function meteor() {
     const m = document.createElement('div');
-
-    const len = 120 + Math.random()*100;
-    const angle = 20 + Math.random()*20;
-
+    const len = 120 + Math.random() * 100; // 轨迹长度
+    const angle = 20 + Math.random() * 25; // 角度
+    
+    // 流星轨迹
     m.style.cssText = `
         position:absolute;
-        width:3px;
+        width:4px;
         height:${len}px;
-        background:linear-gradient(to bottom,transparent,white);
+        background:linear-gradient(to bottom, transparent, rgba(255,255,255,0.95));
         transform:rotate(${angle}deg);
         top:-10%;
         left:${Math.random()*80}%;
         opacity:0;
     `;
-
+    
+    // 流星头部（带发光）
+    const head = document.createElement('div');
+    head.style.cssText = `
+        position:absolute;
+        bottom:0;
+        left:-3px;
+        width:10px;
+        height:10px;
+        background:white;
+        border-radius:50%;
+        box-shadow:0 0 15px white, 0 0 30px white;
+    `;
+    m.appendChild(head);
     box.appendChild(m);
-
+    
     let y = -10;
     let opacity = 0;
-
     function move() {
-        y += 0.8;
-
-        if (y < 20) opacity += 0.05;
-        else opacity -= 0.01;
-
+        y += 0.6; // 速度（越小越慢）
+        if (y < 20) opacity += 0.04;
+        else if (y > 80) opacity -= 0.04;
+        else opacity = 1;
+        
         m.style.top = y + "%";
         m.style.opacity = opacity;
-
+        
         if (y > 110) {
             m.remove();
-            setTimeout(meteor, Math.random()*8000);
+            setTimeout(meteor, Math.random() * 10000); // 0-10秒随机生成
             return;
         }
-
         requestAnimationFrame(move);
     }
-
     move();
 }
 
-/* 初始 */
+// 初始生成6个流星，保证同时有2-3个
 for (let i = 0; i < 6; i++) {
-    setTimeout(meteor, Math.random()*5000);
+    setTimeout(meteor, Math.random() * 5000);
+}
+
+// 修复iOS Safari手势缩放问题
+if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+    document.addEventListener('gesturestart', e => e.preventDefault());
 }
 </script>
-
 </body>
 </html>
