@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Entropy</title>
     <style>
         * {
@@ -26,85 +26,67 @@
             justify-content: center;
             position: relative;
         }
-        /* 完美强制横屏（修复版） */
-        @media (max-width: 768px) and (orientation: portrait) {
+        /* 完美强制横屏（终极修复版） */
+        @media screen and (max-width: 768px) and (orientation: portrait) {
             html {
                 width: 100vh;
                 height: 100vw;
-                overflow: hidden;
+                transform: rotate(90deg);
+                transform-origin: center center;
+                position: fixed;
+                top: 0;
+                left: 0;
             }
             body {
-                transform: rotate(90deg);
-                transform-origin: top left;
-                width: 100vh;
-                min-height: 100vw;
-                position: absolute;
-                top: 0;
-                left: 100vw;
+                width: 100%;
+                height: 100%;
                 overflow-y: auto;
                 overflow-x: hidden;
             }
         }
-        /* 背景层 */
-        .bg {
+        /* 背景层（修复横屏覆盖问题） */
+        .bg, .stars, .meteor-container, .overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
+            pointer-events: none;
+        }
+        .bg {
             z-index: -3;
             background: url('140981624_p0_master1200.jpg') no-repeat center center;
             background-size: cover;
         }
-        /* 星空背景 */
         .stars {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
             z-index: -2;
-            pointer-events: none;
         }
-        /* 全屏流星雨容器 */
         .meteor-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
             z-index: -1;
-            pointer-events: none;
             overflow: hidden;
         }
-        /* 遮罩 */
         .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
             z-index: 0;
+            background: rgba(0, 0, 0, 0.5);
         }
-        /* 主内容容器 */
+        /* 主内容容器（多端适配） */
         .main-container {
             position: relative;
             z-index: 1;
             width: 100%;
-            max-width: 1200px;
-            padding: 3rem 2rem;
+            max-width: 1400px;
+            padding: 2rem 1.5rem;
             display: flex;
             flex-direction: column;
-            gap: 2.5rem;
+            gap: 2rem;
         }
         /* 头部 */
         .header {
             text-align: center;
-            padding-top: 2rem;
+            padding-top: 1rem;
         }
         h1 {
-            font-size: 4rem;
+            font-size: clamp(2rem, 5vw, 4rem);
             color: #39FF14;
             text-shadow: 0 0 15px #39FF14, 0 0 30px rgba(57, 255, 20, 0.5);
             margin-bottom: 0.5rem;
@@ -112,96 +94,99 @@
             animation: glow 3s ease-in-out infinite alternate;
         }
         .subtitle {
-            font-size: 1.2rem;
+            font-size: clamp(0.9rem, 2vw, 1.2rem);
             color: #00BFFF;
             opacity: 0.9;
             animation: glow-blue 4s ease-in-out infinite alternate;
         }
-        /* 内容网格（三列布局，和你截图一致） */
+        /* 内容网格（三列布局，多端自适应） */
         .content-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.2rem;
         }
         /* 卡片样式 */
         .card {
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(57, 255, 20, 0.3);
             border-radius: 12px;
-            padding: 1.5rem;
+            padding: 1.2rem;
             backdrop-filter: blur(5px);
             transition: all 0.3s ease;
         }
         .card:hover {
             border-color: rgba(57, 255, 20, 0.7);
             box-shadow: 0 0 25px rgba(57, 255, 20, 0.3);
-            transform: translateY(-8px);
+            transform: translateY(-6px);
         }
         .card-title {
-            font-size: 1.3rem;
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
             color: #39FF14;
-            margin-bottom: 1rem;
+            margin-bottom: 0.8rem;
             border-bottom: 1px solid rgba(57, 255, 20, 0.3);
-            padding-bottom: 0.5rem;
+            padding-bottom: 0.4rem;
         }
         /* 关于我 */
         .about-text {
             line-height: 1.6;
             color: rgba(255, 255, 255, 0.85);
+            font-size: clamp(0.8rem, 1.8vw, 0.95rem);
         }
         /* 技能栈 */
         .skills {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.6rem;
+            gap: 0.5rem;
         }
         .skill-tag {
             background: rgba(0, 191, 255, 0.2);
             border: 1px solid rgba(0, 191, 255, 0.5);
             color: #00BFFF;
-            padding: 0.3rem 0.8rem;
+            padding: 0.25rem 0.7rem;
             border-radius: 20px;
-            font-size: 0.9rem;
+            font-size: clamp(0.75rem, 1.5vw, 0.9rem);
             transition: all 0.2s ease;
         }
         .skill-tag:hover {
             background: rgba(0, 191, 255, 0.4);
-            transform: scale(1.08);
-            box-shadow: 0 0 10px rgba(0, 191, 255, 0.3);
+            transform: scale(1.05);
+            box-shadow: 0 0 8px rgba(0, 191, 255, 0.3);
         }
         /* 项目 */
         .project-item {
-            margin-bottom: 1rem;
+            margin-bottom: 0.8rem;
             transition: all 0.2s ease;
         }
         .project-item:hover {
-            transform: translateX(5px);
+            transform: translateX(4px);
         }
         .project-name {
             color: white;
             font-weight: 500;
-            margin-bottom: 0.3rem;
+            margin-bottom: 0.25rem;
+            font-size: clamp(0.8rem, 1.8vw, 0.95rem);
         }
         .project-desc {
             color: rgba(255, 255, 255, 0.7);
-            font-size: 0.9rem;
+            font-size: clamp(0.75rem, 1.5vw, 0.85rem);
             line-height: 1.4;
         }
         /* 链接按钮 */
         .links {
             display: flex;
-            gap: 1.2rem;
+            gap: 1rem;
             justify-content: center;
             flex-wrap: wrap;
             padding-bottom: 2rem;
         }
         .link-btn {
-            padding: 0.8rem 2.2rem;
+            padding: 0.7rem 2rem;
             border: 2px solid #39FF14;
             color: #39FF14;
             text-decoration: none;
             border-radius: 50px;
             font-weight: 500;
+            font-size: clamp(0.8rem, 1.8vw, 1rem);
             transition: all 0.3s ease;
             background: transparent;
             position: relative;
@@ -247,51 +232,28 @@
             0%, 100% { opacity: 0.3; }
             50% { opacity: 1; }
         }
-        /* 横屏模式下的响应式优化 */
-        @media (max-width: 768px) and (orientation: portrait) {
-            h1 {
-                font-size: 2.5rem;
-            }
-            .subtitle {
-                font-size: 1rem;
-            }
+        /* 平板适配 */
+        @media (min-width: 769px) and (max-width: 1024px) {
             .main-container {
-                padding: 2rem 1.5rem;
-                gap: 2rem;
-            }
-            .header {
-                padding-top: 1rem;
+                max-width: 900px;
+                padding: 2.5rem 2rem;
             }
             .content-grid {
                 grid-template-columns: repeat(3, 1fr);
-                gap: 1rem;
+            }
+        }
+        /* 桌面适配 */
+        @media (min-width: 1025px) {
+            .main-container {
+                max-width: 1200px;
+                padding: 3rem 2rem;
+            }
+            .content-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1.5rem;
             }
             .card {
-                padding: 1rem;
-            }
-            .card-title {
-                font-size: 1.1rem;
-            }
-            .about-text {
-                font-size: 0.85rem;
-            }
-            .skill-tag {
-                font-size: 0.8rem;
-                padding: 0.2rem 0.6rem;
-            }
-            .project-name {
-                font-size: 0.85rem;
-            }
-            .project-desc {
-                font-size: 0.8rem;
-            }
-            .links {
-                padding-bottom: 3rem;
-                gap: 0.8rem;
-            }
-            .link-btn {
-                padding: 0.6rem 1.5rem;
-                font-size: 0.85rem;
+                padding: 1.5rem;
             }
         }
     </style>
@@ -433,6 +395,12 @@
         // 初始生成流星
         for (let i = 0; i < meteorCount; i++) {
             setTimeout(createMeteor, Math.random() * 8000);
+        }
+        // 修复iOS Safari横屏缩放问题
+        if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+            document.addEventListener('gesturestart', function(e) {
+                e.preventDefault();
+            });
         }
     </script>
 </body>
