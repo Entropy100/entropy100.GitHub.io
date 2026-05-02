@@ -97,6 +97,14 @@ h1 {
     border: 1px solid #00BFFF;
     color: #00BFFF;
     font-size: 0.8rem;
+    transition: all 0.2s ease;
+}
+.skill:hover {
+    transform: scale(1.08);
+    box-shadow:
+        0 0 8px rgba(0, 191, 255, 0.55),
+        0 0 16px rgba(0, 191, 255, 0.35);
+    text-shadow: 0 0 6px rgba(0, 191, 255, 0.8);
 }
 
 /* 爱好标签专属颜色 */
@@ -106,8 +114,11 @@ h1 {
 }
 
 .hobby .skill:hover {
-    box-shadow: 0 0 8px #ff77ff;
+    box-shadow:
+        0 0 8px rgba(255, 119, 255, 0.65),
+        0 0 16px rgba(255, 119, 255, 0.45);
     transform: scale(1.05);
+    text-shadow: 0 0 6px rgba(255, 119, 255, 0.8);
 }
 
 /* 按钮 */
@@ -168,7 +179,6 @@ h1 {
 <div class="bg"></div>
 <div class="stars"></div>
 <div class="overlay"></div>
->
 
 <div class="main-container">
 
@@ -225,7 +235,6 @@ h1 {
     </div>
 
 </div>
-
 
 </body>
 </html>
