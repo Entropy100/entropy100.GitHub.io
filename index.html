@@ -4,237 +4,316 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Entropy</title>
-
 <style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:system-ui,sans-serif;color:white;overflow-x:hidden;}
 
-body {
-    font-family: system-ui, sans-serif;
-    color: white;
-    overflow-x: hidden;
-}
+/* 美化滚动条 */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.3); }
+::-webkit-scrollbar-thumb { background: #00BFFF; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #39FF14; }
 
-.bg { z-index: -3; }
-.stars { z-index: -2; }
-.meteor-container { z-index: -1; } /* ☄️ 在背景上 */
-.overlay { z-index: 0; }
-.main-container { z-index: 1; } /* 文字在最上 */
-
-/* 背景 */
-.bg {
+.bg-img {
     position: fixed;
     inset: 0;
-    background: url('140981624_p0_master1200.jpg') center/cover no-repeat;
+    width: 100%;
+    height: 100%;
+    z-index: -4;
+    /* 核心代码：引用图片 */
+    background: url('140981624_p0_master1200.jpg') no-repeat center center;
+    background-size: cover;
+    /* 保持原有的滤镜效果，让文字更清晰 */
+    filter: brightness(0.7) contrast(1.06);
+}
+.overlay{z-index:-3;background:rgba(0,0,0,0.30);}
+.stars{z-index:-2;background:radial-gradient(circle,#fff 1px,transparent 2px);animation:twinkle 6s infinite;}
+@keyframes twinkle{0%,100%{opacity:.35}50%{opacity:.7}}
+
+.main-container{position:relative;max-width:1200px;margin:auto;padding:2rem;z-index:1;}
+
+/* 赛博朋克渐变标题 */
+h1{
+    text-align:center;
+    font-size:clamp(2.5rem,6vw,5rem);
+    background: linear-gradient(90deg, #39FF14, #00BFFF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 20px rgba(57, 255, 20, 0.4);
+    margin-bottom: 0.5rem;
+}
+.subtitle{text-align:center;color:#00BFFF;margin-bottom:2rem;}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;}
+/* 卡片基础样式与入场动画 */
+.card{
+    background:rgba(0,0,0,0.3);
+    border:1px solid rgba(57,255,20,0.3);
+    padding:1.2rem;
+    border-radius:12px;
+    backdrop-filter:blur(6px);
+    transition:.3s;
+    animation: fadeInUp 0.8s ease backwards;
+}
+.card:hover{transform:translateY(-6px);box-shadow:0 0 20px rgba(57,255,20,.3);}
+/* 卡片动画错落延迟 */
+.card:nth-child(1) { animation-delay: 0.1s; }
+.card:nth-child(2) { animation-delay: 0.3s; }
+.card:nth-child(3) { animation-delay: 0.5s; }
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-/* 遮罩 */
-.overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
-}
+.skill{display:inline-block;margin:4px;padding:3px 10px;border-radius:999px;border:1px solid #00BFFF;color:#00BFFF;font-size:0.8rem;transition:all 0.2s ease;}
+.skill:hover{transform:scale(1.08);box-shadow:0 0 8px rgba(0,191,255,.55),0 0 16px rgba(0,191,255,.35);text-shadow:0 0 6px rgba(0,191,255,.8);}
 
-/* 星空 */
-.stars, .meteor-container {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-}
+.hobby .skill{border-color:#ff77ff;color:#ff77ff;}
+.hobby .skill:hover{box-shadow:0 0 8px rgba(255,119,255,.65),0 0 16px rgba(255,119,255,.45);transform:scale(1.05);text-shadow:0 0 6px rgba(255,119,255,.8);}
 
-/* 主体 */
-.main-container {
-    position: relative;
-    max-width: 1200px;
-    margin: auto;
-    padding: 2rem;
+/* 顶部栏靠右 */
+.topbar{
+    position:sticky;
+    top:.5rem;
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+    flex-wrap:wrap;
+    padding:.5rem 1rem;
+    background:rgba(10,12,18,.52);
+    border-radius:18px;
+    backdrop-filter:blur(12px);
+    border:1px solid rgba(255,255,255,.12);
+    z-index:10;
 }
+/* 缩小控制按钮 */
+.ctrl,.lang{
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,.16);
+    padding:0 .6rem;
+    height:1.8rem;
+    font-size:0.8rem;
+    background:rgba(255,255,255,.06);
+    color:white;
+    cursor:pointer;
+    transition:.2s;
+}
+.ctrl.active,.ctrl:hover,.lang:hover{border-color:rgba(57,255,20,.48);box-shadow:0 0 0 3px rgba(57,255,20,.08);}
 
-/* 标题 */
-h1 {
-    font-size: clamp(2rem, 5vw, 4rem);
-    text-align: center;
-    color: #39FF14;
-}
+.details{margin-top:0.5rem;}
+.details summary{cursor:pointer;color:#ff77ff;font-weight:bold;outline:none;margin:.3rem 0;}
+.details summary::-webkit-details-marker{display:none;}
+.detail-body{margin-top:.5rem;display:flex;flex-wrap:wrap;gap:.4rem;}
+.detail-body .skill{border-color:#ff77ff;color:#ff77ff;}
 
-/* 副标题 */
-.subtitle {
-    text-align: center;
-    color: #00BFFF;
-    margin-bottom: 2rem;
-}
+.links{text-align:center;margin-top:2rem;}
+.links a{display:inline-block;margin:.5rem;padding:.6rem 1.6rem;border:1px solid #39FF14;border-radius:999px;color:#39FF14;text-decoration:none;}
+.links a:hover{background:#39FF14;color:black;}
 
-/* 网格 */
-.grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 1.5rem;
-}
-
-/* 卡片 */
-.card {
-    background: rgba(0,0,0,0.3);
-    border: 1px solid rgba(57,255,20,0.3);
-    padding: 1.2rem;
-    border-radius: 12px;
-    backdrop-filter: blur(6px);
-    transition: .3s;
-}
-.card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 0 20px rgba(57,255,20,.3);
-}
-
-/* 技能 */
-.skill {
-    display: inline-block;
-    margin: 4px;
-    padding: 3px 10px;
-    border-radius: 999px;
-    border: 1px solid #00BFFF;
-    color: #00BFFF;
-    font-size: 0.8rem;
-    transition: all 0.2s ease;
-}
-.skill:hover {
-    transform: scale(1.08);
-    box-shadow:
-        0 0 8px rgba(0, 191, 255, 0.55),
-        0 0 16px rgba(0, 191, 255, 0.35);
-    text-shadow: 0 0 6px rgba(0, 191, 255, 0.8);
-}
-
-/* 爱好标签专属颜色 */
-.hobby .skill {
-    border-color: #ff77ff;
-    color: #ff77ff;
-}
-
-.hobby .skill:hover {
-    box-shadow:
-        0 0 8px rgba(255, 119, 255, 0.65),
-        0 0 16px rgba(255, 119, 255, 0.45);
-    transform: scale(1.05);
-    text-shadow: 0 0 6px rgba(255, 119, 255, 0.8);
-}
-
-/* 按钮 */
-.links {
-    margin-top: 2rem;
-    text-align: center;
-}
-.links a {
-    display: inline-block;
-    margin: .5rem;
-    padding: .6rem 1.6rem;
-    border: 1px solid #39FF14;
-    border-radius: 999px;
-    color: #39FF14;
-    text-decoration: none;
-}
-.links a:hover {
-    background: #39FF14;
-    color: black;
-}
-
-/* ⭐ 星星 */
-@keyframes twinkle {
-    0%,100%{opacity:.3}
-    50%{opacity:1}
-}
-
-/* 📱 强制横屏（稳定版） */
-@media (max-width: 768px) and (orientation: portrait) {
-
-    body {
-        overflow: hidden;
-    }
-
-    .main-container {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        width: 100vh;
-        height: 100vw;
-        transform: translate(-50%, -50%) rotate(90deg);
-        overflow-y: auto;
-    }
-
-    .bg, .overlay, .stars, .meteor-container {
-        width: 100vh;
-        height: 100vw;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%) rotate(90deg);
-    }
+@media(max-width:768px) and (orientation:portrait){
+body{overflow:hidden;}
+.main-container{position:fixed;top:50%;left:50%;width:100vh;height:100vw;transform:translate(-50%,-50%) rotate(90deg);overflow-y:auto;}
+.bg-video,.overlay,.stars{width:100vh;height:100vw;top:50%;left:50%;transform:translate(-50%,-50%) rotate(90deg);}
 }
 </style>
 </head>
-
 <body>
 
-<div class="bg"></div>
+<div class="bg-img"></div>
 <div class="stars"></div>
 <div class="overlay"></div>
 
 <div class="main-container">
+<div class="topbar">
+<button class="ctrl active" id="musicBtn">背景音乐：开</button>
+<select class="lang" id="langSelect">
+<option value="zh-CN">简中</option>
+<option value="zh-TW">繁中</option>
+<option value="en">English</option>
+<option value="ja">日本語</option>
+</select>
+</div>
 
-    <h1>Entropy</h1>
-    <p class="subtitle">高中生 · 编程爱好者 · ACG玩家</p>
+<h1 data-i18n="title">熵</h1>
+<p class="subtitle" data-i18n="subtitle">终有一日，我们会再次相见。</p>
 
-    <div class="grid">
+<div class="grid">
+<div class="card">
+<h3 data-i18n="skills">技能栈</h3>
+<span class="skill">Python</span>
+<span class="skill">C</span>
+<span class="skill">HTML</span>
+<span class="skill">JavaScript</span>
+<span class="skill">CSS</span>
+<span class="skill">Shizuku</span>
+<p style="color:#ccc;margin-top:0.5rem;">(Tip:好像都会点，但好像都不精通?)</p>
+</div>
 
-        <div class="card">
-            <h3>精选项目</h3>
-            <p>Termux 美化脚本</p>
-            <p>一键配置初音绿主题终端</p>
-            <br>
-            <p>个人博客系统</p>
-            <p>支持 Markdown 自动部署</p>
-        </div>
+<div class="card hobby">
+<h3 data-i18n="hobbies">爱好</h3>
+<span class="skill">galgame</span>
+<span class="skill">音游</span>
+<span class="skill">动漫</span>
+<span class="skill">小说&漫画</span>
+<span class="skill">虚拟主播&AI主播</span>
+<span class="skill">'Virtual Singer'</span>
 
-        <div class="card">
-            <h3>技能栈</h3>
-            <span class="skill">Python</span>
-            <span class="skill">HTML/CSS</span>
-            <span class="skill">JavaScript</span>
-            <span class="skill">Linux</span>
-            <span class="skill">Termux</span>
-            <span class="skill">Git</span>
-            <span class="skill">逆向工程</span>
-            <span class="skill">DNS</span>
-        </div>
+<details class="details">
+<summary>galgame</summary>
+<div class="detail-body">
+<span class="skill">夏日口袋</span><span class="skill">只愿</span><span class="skill">巧克力与香之兰(猫娘乐园)</span>
+<span class="skill">天津罪</span><span class="skill">狐姬&狐姬零</span><span class="skill">CLANNAD</span>
+<span class="skill">AIR</span><span class="skill">樱之诗</span><span class="skill">沙耶之歌</span>
+<span class="skill">素晴日</span><span class="skill">Rewrite</span><span class="skill">9-nine系列</span>
+<span class="skill">猫忍之心</span><span class="skill">NEKONIN系列</span><span class="skill">命运石之门</span>
+<span class="skill">缘之空</span><span class="skill">美少女万华镜系列</span><span class="skill">星空列车与白的旅行</span>
+<span class="skill">魔法少女的魔女审判</span><span class="skill">我和她的世界末日</span>
+</div>
+<p style="color:#ccc;font-size:0.85rem;">Tip:虽然没玩完，但我会努力的!</p>
+</details>
 
-        <div class="card">
-            <h3>关于我</h3>
-            <p>
-                热爱代码与二次元的高中生。<br>
-                喜欢折腾技术，专注开发与终端美化。<br>
-                相信代码可以创造无限可能。
-            </p>
-        </div>
-        
-        <div class="card hobby">
-            <h3>爱好</h3>
-            <span class="skill">galgame</span>
-            <span class="skill">音游</span>
-            <span class="skill">百合</span>
-            <span class="skill">番剧</span>
-            <span class="skill">VOCALOID</span>
-        </div>
+<details class="details">
+<summary>音游</summary>
+<div class="detail-body">
+<span class="skill">世界计划:缤纷舞台</span><span class="skill">phigros&phira</span><span class="skill">喵斯快跑</span>
+<span class="skill">音乐世界赛特斯</span><span class="skill">少女乐团派对</span><span class="skill">律动轨迹</span>
+</div>
+</details>
 
-    </div>
+<details class="details">
+<summary>动漫</summary>
+<div class="detail-body">
+<span class="skill">可塑性记忆</span><span class="skill">超时空辉夜姬!</span><span class="skill">游戏人生&游戏人生零</span>
+<span class="skill">利兹与青鸟</span><span class="skill">天籁人偶</span><span class="skill">迷途之子</span>
+<span class="skill">颂乐人偶</span>
+</div>
+</details>
 
-    <div class="links">
-        <a href="https://github.com/Entropy100" target="_blank">GitHub</a>
-        <a href="https://space.bilibili.com/382994048" target="_blank">B站</a>
-        <a href="mailto:qqcooooooo@gmail.com">Email</a>
-    </div>
+<details class="details">
+<summary>小说&漫画</summary>
+<div class="detail-body">
+<p style="color:#ccc;font-size:0.85rem;">Tip:这里我完全不敢写</p>
+</div>
+</details>
+
+<details class="details">
+<summary>虚拟主播&AI主播</summary>
+<div class="detail-body">
+<span class="skill">泠鸢yousa</span><span class="skill">hanser</span><span class="skill">呜米&咩栗</span>
+<span class="skill">真红莉爱</span><span class="skill">夜车</span><span class="skill">Gura&Saba</span>
+<span class="skill">Neuro Sama</span><span class="skill">星街彗星</span><span class="skill">小森Met</span>
+<span class="skill">保锺玛琳</span><span class="skill">绊爱</span><span class="skill">百鬼绫目</span>
+</div>
+</details>
+
+<details class="details">
+<summary>Virtual Singer</summary>
+<div class="detail-body">
+<span class="skill">初音未来</span><span class="skill">重音teto</span><span class="skill">镜音铃</span>
+<span class="skill">巡音流歌</span><span class="skill">星尘infinity</span><span class="skill">永夜minus</span>
+<span class="skill">诗岸</span><span class="skill">海伊</span><span class="skill">可不</span>
+<span class="skill">艾可</span><span class="skill">牛肉</span><span class="skill">GUMI</span>
+</div>
+</details>
+</div>
+
+<div class="card">
+<h3 data-i18n="about">作者的话</h3>
+<p data-i18n="about_text">一个阴暗的高中生，对编程抱有一定兴趣，Python/C语言新手，对百合抱有一定憧憬，总是咬自己好兄弟的肩膀，希望有一天变成一只香软的雌性小猫娘</p>
+</div>
 
 </div>
 
+<div class="links">
+<a href="https://github.com/Entropy100" target="_blank">Github: Entropy</a>
+<a href="https://space.bilibili.com/382994048" target="_blank">Bilibili: 时光里有个沙漏</a>
+<a href="mailto:qqcooooooo@gmail.com">Email: qqcooooooo@gmail.com</a>
+</div>
+
+<div style="text-align:center;margin-top:1rem;color:#ccc;">Github-鸣濑奈岫-Entropy</div>
+</div>
+
+<audio id="bgm" src="background.mp3" loop preload="auto"></audio>
+<script>
+const musicBtn=document.getElementById("musicBtn");
+const bgm=document.getElementById("bgm");
+const langSelect = document.getElementById('langSelect');
+motionOn=true;
+
+// 语言字典
+const i18n = {
+    "zh-CN": {
+        "title": "熵",
+        "subtitle": "终有一日，我们会再次相见。",
+        "skills": "技能栈",
+        "hobbies": "爱好",
+        "about": "作者的话",
+        "about_text": "一个阴暗的高中生，对编程抱有一定兴趣，Python/C语言新手，对百合抱有一定憧憬，总是咬自己好兄弟的肩膀，希望有一天变成一只香软的雌性小猫娘",
+        "btn_music_on": "背景音乐：开",
+        "btn_music_off": "背景音乐：关",
+    },
+    "zh-TW": {
+        "title": "熵",
+        "subtitle": "終有一日，我們會再次相見。",
+        "skills": "技能棧",
+        "hobbies": "愛好",
+        "about": "作者的話",
+        "about_text": "一個陰暗的高中生，對編程抱有一定興趣，Python/C語言新手，對百合抱有一定憧憬，總是咬自己好兄弟的肩膀，希望有一天變成一隻香軟的雌性小貓娘",
+        "btn_music_on": "背景音樂：開",
+        "btn_music_off": "背景音樂：關",
+    },
+    "en": {
+        "title": "Entropy",
+        "subtitle": "One day, we will meet again.",
+        "skills": "Tech Stack",
+        "hobbies": "Hobbies",
+        "about": "About Me",
+        "about_text": "A gloomy high school student, interested in programming, Python/C beginner, yearning for Yuri, always bites best bro's shoulder, wishes to become a soft and sweet catgirl someday.",
+        "btn_music_on": "Music: ON",
+        "btn_music_off": "Music: OFF",
+    },
+    "ja": {
+        "title": "エントロピー",
+        "subtitle": "いつか、また会える。",
+        "skills": "スキル",
+        "hobbies": "趣味",
+        "about": "私について",
+        "about_text": "プログラミングに興味がある陰キャ高校生、Python/C初心者、百合に憧れる、いつも親友の肩を噛む、いつかふわふわのネコ娘になりたい。",
+        "btn_music_on": "音楽：オン",
+        "btn_music_off": "音楽：オフ",
+    }
+};
+
+// 切换语言函数
+function changeLanguage(lang) {
+    if(!i18n[lang]) return;
+    
+    // 替换所有带有 data-i18n 的文本
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if(i18n[lang][key]) {
+            el.textContent = i18n[lang][key];
+        }
+    });
+
+    // 更新按钮文字
+    musicBtn.textContent = musicOn ? i18n[lang]["btn_music_on"] : i18n[lang]["btn_music_off"];
+    
+}
+
+langSelect.addEventListener('change', (e) => {
+    changeLanguage(e.target.value);
+});
+
+musicBtn.addEventListener("click",()=>{
+    musicOn=!musicOn;
+    if(musicOn){bgm.play().catch(()=>{});}else{bgm.pause();}
+    musicBtn.classList.toggle("active",musicOn);
+    changeLanguage(langSelect.value); // 同步当前语言下的按钮文字
+});
+
+
+</script>
 </body>
 </html>
