@@ -44,19 +44,28 @@ h1{
 }
 .subtitle{text-align:center;color:#00BFFF;margin-bottom:2rem;}
 
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;}
-/* 卡片基础样式与入场动画 */
-.card{
-    background:rgba(0,0,0,0.3);
-    border:1px solid rgba(57,255,20,0.3);
-    padding:1.2rem;
-    border-radius:12px;
-    backdrop-filter:blur(6px);
-    transition:.3s;
-    animation: fadeInUp 0.8s ease backwards;
+.grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.8rem;
+    width: 100%;
 }
-.card:hover{transform:translateY(-6px);box-shadow:0 0 20px rgba(57,255,20,.3);}
-/* 卡片动画错落延迟 */
+/* 卡片基础样式与入场动画 */
+.card {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(57,255,20,0.3);
+    padding: 1.8rem;
+    border-radius: 12px;
+    backdrop-filter: blur(6px);
+    transition: .3s;
+    animation: fadeInUp 0.8s ease backwards;
+    min-height: 250px; /* 拉高卡片 */
+}
+.card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 0 20px rgba(57,255,20,.3);
+}
+
 .card:nth-child(1) { animation-delay: 0.1s; }
 .card:nth-child(2) { animation-delay: 0.3s; }
 .card:nth-child(3) { animation-delay: 0.5s; }
@@ -112,8 +121,22 @@ h1{
 .links a:hover{background:#39FF14;color:black;}
 
 @media(max-width:768px) and (orientation:portrait){
-body{overflow:hidden;}
-.main-container{position:fixed;top:50%;left:50%;width:100vh;height:100vw;transform:translate(-50%,-50%) rotate(90deg);overflow-y:auto;}
+    body{overflow:hidden;}
+    .main-container,
+    .bg-img,
+    .overlay,
+    .stars {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        width: 100vh;
+        height: 100vw;
+        transform: translate(-50%, -50%) rotate(90deg);
+    }
+    .main-container {
+        overflow-y: auto;
+    }
+}
 .bg-video,.overlay,.stars{width:100vh;height:100vw;top:50%;left:50%;transform:translate(-50%,-50%) rotate(90deg);}
 }
 </style>
@@ -274,7 +297,7 @@ const i18n = {
         "btn_music_off": "Music: OFF",
     },
     "ja": {
-        "title": "エントロピー",
+        "title": "鳴瀨奈岫",
         "subtitle": "いつか、また会える。",
         "skills": "スキル",
         "hobbies": "趣味",
