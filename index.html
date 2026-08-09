@@ -14,7 +14,7 @@ body{font-family:system-ui,sans-serif;color:white;overflow-x:hidden;}
 ::-webkit-scrollbar-thumb { background: #00BFFF; border-radius: 10px; }
 ::-webkit-scrollbar-thumb:hover { background: #39FF14; }
 
-.bg-img {
+。bg-img {
     position: fixed;
     inset: 0;
     width: 100%;
@@ -26,11 +26,11 @@ body{font-family:system-ui,sans-serif;color:white;overflow-x:hidden;}
     /* 保持原有的滤镜效果，让文字更清晰 */
     filter: brightness(0.7) contrast(1.06);
 }
-.overlay{z-index:-3;background:rgba(0,0,0,0.30);}
-.stars{z-index:-2;background:radial-gradient(circle,#fff 1px,transparent 2px);animation:twinkle 6s infinite;}
-@keyframes twinkle{0%,100%{opacity:.35}50%{opacity:.7}}
+。overlay{z-index:-3;background:rgba(0,0,0,0.30);}
+。stars{z-index:-2;background:radial-gradient(circle,#fff 1px,transparent 2px);animation:twinkle 6s infinite;}
+@keyframes twinkle{0%，100%{opacity:.35}50%{opacity:.7}}
 
-.main-container{position:relative;max-width:1200px;margin:auto;padding:2rem;z-index:1;}
+。main-container{position:relative;max-width:1200px;margin:auto;padding:2rem;z-index:1;}
 
 /* 赛博朋克渐变标题 */
 h1{
@@ -65,7 +65,7 @@ h1{
     box-shadow: 0 0 20px rgba(57,255,20,.3);
 }
 
-.card:nth-child(1) { animation-delay: 0.1s; }
+。card:nth-child(1) { animation-delay: 0.1s; }
 .card:nth-child(2) { animation-delay: 0.3s; }
 .card:nth-child(3) { animation-delay: 0.5s; }
 
@@ -337,5 +337,6 @@ musicBtn.addEventListener("click",()=>{
 
 
 </script>
+<script src="https://fastly.jsdelivr.net/npm/live2d-widgets@1.0.1/dist/autoload.js"></script>
 </body>
 </html>
